@@ -33,7 +33,7 @@ Header files (\*.h) should be in one or more folders called “Include”.
 
 
 ### File Names
-Module/Class Source and header filenames should differ only by the extension.
+Module Source and header filenames should differ only by the extension.
 eg)  `SerialDriver.c ` and  `SerialDriver.h`
 
 
@@ -192,23 +192,34 @@ Always adopts braces even if the control statement is one line.
 
 ### Indentation for Switch statements
 Within a switch statement all case statements and the default statement should be indented to the
-same level as the opening brace, all other statements should follow the normal indentation rule.
+one level of identation in from the opening brace, all other statements should follow the normal indentation rule.
 
 e.g.
 ```C++
 switch(currentState)
 {
-case PossibleStates::StateA:
-   break;
-case PossibleStates::StateB:
-   break;
-default:
-   break;
+   case PossibleStates::StateA:
+      break;
+
+   case PossibleStates::StateB:
+      break;
+	  
+   case PossibleStates::StateC:
+   {
+      u8 someVariableInScope;   
+	  
+	  ... some code
+	  
+      break;
+   }
+  
+   default:
+      break;
 }
 ```
 
 ### Line Length
-Lines should not exceed 100 characters in length. Lines that exceed the limit should be split across
+Lines should not exceed 80 characters in length. Lines that exceed the limit should be split across
 two or more lines with the additional lines indented to the next indentation level or the first
 parameter level from the first line.
 
@@ -281,7 +292,7 @@ To be included but not to overwhelm the code. And to be in the double forward sl
 ```
 
 ### Return Paths
-Functions to have 1 return path unless there is a very, very good reason why it cannot. 
+Functions to have 1 return path unless there is a very, very good reason why it cannot.
 
 e.g.
 
@@ -297,6 +308,11 @@ bool DoSomething()
    return success;
 }
 ```
+>With debuggers with limited breakpoints you will soon see why this is a good idea. 
+
+
+### goto statement 
+There has to be an exceptional reason for performance. 
 
 
 ### Yoda Comparisons
@@ -326,17 +342,29 @@ Complex macros should be avoided.
 ### Magic numbers
 Magic numbers are to be avoided, use constants or defines. The only exceptions are numbers used
 in only one place.
+
+e.g. 
+```C++
+#define MCU_COMMAND_ON	0xFA
+
+WriteSerialPort(MCU_COMMAND_ON, 1); 
+```
+and not
+
+```C++
+WriteSerialPort(0xFA, 1); 
+```
+
 > This is primarily to avoid burying numbers in code which makes it harder to maintain. It encourages
 > re-use of values without relying on duplication.
 
 ### #includes
 Includes of header files within headers should be avoided, whenever practical. There are some
-situations where this is not practical, for C++ this includes the header declaring the base class which
-needs to be included before the derived class can be declared.
+situations where this is not practical.
 
 
 ### Code in Header Files
-The only code (implementations) in header files should be code in-lined for performance
+No implementation in header files unless there is an exceptional reason. 
 
 ### Guards/Sentinels
 All header files should have guards around their contents.
@@ -395,5 +423,6 @@ e.g. `index = 10L` not `index = 10l`
 
 
 ### Dynamic Allocation
-Allocate all memory required at initialisation to avoid the need for dynamic allocation at run time. 
+Where possible allocate all memory required at initialisation and use memory manager to avoid the 
+need for dynamic allocation at run time. 
 
